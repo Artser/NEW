@@ -58,10 +58,10 @@ class Actor {
         if (this === actor) {
             return false;
         }
-		var actorRight = this.left < actor.right,
-		actorLeft = actor.left < this.right,
-		actorBottom = this.top < actor.bottom,
-		actorTop = actor.top < this.bottom;
+        let actorRight = this.left < actor.right,
+            actorLeft = actor.left < this.right,
+            actorBottom = this.top < actor.bottom,
+            actorTop = actor.top < this.bottom;
         return actorRight && actorLeft && actorBottom && actorTop;
     }
 }
@@ -94,9 +94,9 @@ class Level {
         }
 
         const top = Math.floor(pos.y),
-         bottom = Math.ceil(pos.y + size.y),
-         left = Math.floor(pos.x),
-         right = Math.ceil(pos.x + size.x);
+            bottom = Math.ceil(pos.y + size.y),
+            left = Math.floor(pos.x),
+            right = Math.ceil(pos.x + size.x);
 
         if (bottom > this.height) {
             return 'lava';
@@ -161,7 +161,7 @@ class LevelParser {
     }
 
     createGrid(plan) {
-		let e = el => this.obstacleFromSymbol(el);
+        let e = el => this.obstacleFromSymbol(el);
         return plan.map(element => element.split('').map(e));
     }
 
@@ -170,68 +170,54 @@ class LevelParser {
         plan.forEach((element, y) => {
             element.split('').forEach((el, x) => {
 
-                /*
-				Тут, я полагаю, что в цикле перебираются элементы игрового поля (карты), описанной в schemas
-                Вот можете вывести их в консоль, они все выведуться.  (фаербол, стена, лава, пустые пространства и т.п.)
-				
-					console.dir (el);
-				*/
+                /*Тут, я полагаю, что в цикле перебираются элементы игрового поля (карты), описанной в schemas
+                Вот можете вывести их в консоль, они все выведуться.  (фаербол, стена, лава, пустые пространства и т.п.)*/
 
                 const classActor = this.actorFromSymbol(el);
-                /*
-				Здесь, как видим, возвращаются все элементы  игрофого поля
-				
-					console.dir (classActor);
-				*/
+                // Здесь, как видим, возвращаются все элементы  игрофого поля
 
                 if (typeof classActor === 'function') {
 
-                    /*console.dir (classActor);
-                    Здесь проверяется уже что элемент - функция.  Т.е. это не пустое пространство. 
+                    /*Здесь проверяется уже что элемент - функция.  Т.е. это не пустое пространство. 
                     
-						class FireRain
-						class HorizontalFireball
-						class Coin
-						class Player
-						class Coin
+			class FireRain
+			class HorizontalFireball
+			class Coin
+			class Player
+			class Coin
                     
                       Ну, понятно дело что соответсвие символов их  КЛАССАМ прописано в этом вот объекте. Он определён ниже.  Т.е.  каждый исмвол соответсвует своему классу!
                       А из класса мы можем сделать что?  Правильно - экземпляр класса - ОБЪЕКТ. 
                     
-						const actorDict = {
-						'@': Player,
-						'v': VerticalFireball,
-						'o': Coin,
-						'=': HorizontalFireball,
-						'|': FireRain
+			const actorDict = {
+			'@': Player,
+			'v': VerticalFireball,
+			'o': Coin,
+			'=': HorizontalFireball,
+			'|': FireRain
 
 
-						};
-					*/
+			 };*/
 
 
                     // Значит  мы можем  из неё создать экземпляр класса - ОБЪЕКТ
                     const actor = new classActor(new Vector(x, y));
-					
-					/*
-					Кратко.
-					Перебрали поле   -> Если Символ - имеет свой класс Создадим объект -> Если объект унаследован от Actor -> Поместим его в массив
-					*/
+
+                    /*Кратко.
+		     *Перебрали поле   -> Если Символ - имеет свой класс Создадим объект 
+		     *-> Если объект унаследован от Actor -> Поместим его в массив*/
 
                     if (actor instanceof Actor) {
-                        console.dir(actor)
-                         /* 
-						 В массив  actors   можно  поместить только  экземпляры коасса унаследованные от Actor
-                         Или же  В массив  actors   можно  поместить только объекты класса Actor
-                         Всё объекты созданные на поле наследуют от одного родительского класса Actor 
-						 */
+                        /* В массив  actors   можно  поместить только  экземпляры коасса унаследованные от Actor
+                         *Или же  В массив  actors   можно  поместить только объекты класса Actor
+                         *Всё объекты созданные на поле наследуют от одного родительского класса Actor */
                         actors.push(actor);
                     }
                 }
             })
         });
         return actors;
-		
+
     }
 
     parse(plan) {
@@ -399,20 +385,15 @@ const actorDict = {
 
 let gameWin = () => {
 
-    console.log('Вы  выиграли приз!')
-
     const parser = new LevelParser(actorDict);
     runGame(schemasWin, parser, DOMDisplay)
 
-	
-    document.getElementById('pole').className = "end";
-	document.getElementsByClassName("")
-	
+    document.getElementById('pole').className = "background";
+    document.getElementById('pole').classList.add("end");
+
 }
 
 
 const parser = new LevelParser(actorDict);
 runGame(schemas, parser, DOMDisplay)
-    .then(() => {
-        gameWin()
-    });
+    .then(() => gameWin());
