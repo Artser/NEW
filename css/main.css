@@ -4,6 +4,7 @@ hidden {
 .background {
     table-layout: fixed;
     border-spacing: 0;
+    background-color: blue;
 }
 #pole {
     height: 330px;
