@@ -1,6 +1,5 @@
 'use strict';
 
-
 class Vector {
     constructor(x = 0, y = 0) {
         this.x = x;
@@ -170,32 +169,38 @@ class LevelParser {
         plan.forEach((element, y) => {
             element.split('').forEach((el, x) => {
 
-                /*Тут, я полагаю, что в цикле перебираются элементы игрового поля (карты), описанной в schemas
-                Вот можете вывести их в консоль, они все выведуться.  (фаербол, стена, лава, пустые пространства и т.п.)*/
+                /**Тут, я полагаю, что в цикле перебираются элементы игрового поля
+                 *(карты), описанной в schemas
+                 *Вот можете вывести их в консоль, они все выведуться.
+                 *(фаербол, стена, лава, пустые пространства и т.п.)*/
 
                 const classActor = this.actorFromSymbol(el);
                 // Здесь, как видим, возвращаются все элементы  игрофого поля
 
                 if (typeof classActor === 'function') {
 
-                    /*Здесь проверяется уже что элемент - функция.  Т.е. это не пустое пространство. 
+                    /**
+		    *Здесь проверяется уже что элемент - функция.  Т.е. это не пустое пространство. 
                     
-			*class FireRain
-			*class HorizontalFireball
-			*class Coin
-			*class Player
-			*class Coin
+		      *class FireRain
+		      *class HorizontalFireball
+		      *class Coin
+		      *class Player
+		      *class Coin
                     
-                      *Ну, понятно дело что соответсвие символов их  КЛАССАМ прописано в этом вот объекте. 
-		      *Он определён ниже.  Т.е.  каждый исмвол соответсвует своему классу!
-                      *А из класса мы можем сделать что?  Правильно - экземпляр класса - ОБЪЕКТ. 
+                      *Ну, понятно дело что соответсвие символов их  КЛАССАМ 
+                      *прописано в этом вот объекте. 
+		      *Он определён ниже.  Т.е.  каждый исмвол соответсвует 
+                      *своему классу!
+                      *А из класса мы можем сделать что?  
+                      *Правильно - экземпляр класса - ОБЪЕКТ. 
                     
-			*const actorDict = {
-			*'@': Player,
-			*'v': VerticalFireball,
-			*'o': Coin,
-			*'=': HorizontalFireball,
-			*'|': FireRain
+		      *const actorDict = {
+		      *'@': Player,
+		      *'v': VerticalFireball,
+		      *'o': Coin,
+		      *'=': HorizontalFireball,
+		      *'|': FireRain
 
 
 			};*/
@@ -204,13 +209,18 @@ class LevelParser {
                     // Значит  мы можем  из неё создать экземпляр класса - ОБЪЕКТ
                     const actor = new classActor(new Vector(x, y));
 
-                    /*Кратко. Перебрали поле   -> Если Символ - имеет свой класс 
-		    *Создадим объект -> Если объект унаследован от Actor -> Поместим его в массив*/
+                    /**
+		     *Кратко. Перебрали поле   -> Если Символ - имеет свой класс 
+                     *Создадим объект -> Если объект унаследован от Actor ->
+                     *Поместим его в массив*/
 
                     if (actor instanceof Actor) {
-                        /* В массив  actors   можно  поместить только  экземпляры коасса унаследованные от Actor
-                         Или же  В массив  actors   можно  поместить только объекты класса Actor
-                         Всё объекты созданные на поле наследуют от одного родительского класса Actor */
+                        /** 
+			 *В массив  actors   можно  поместить только  экземпляры 
+                         *класса унаследованные от Actor или же  В массив  actors
+                         *можно  поместить только объекты класса Actor
+                         *Всё объекты созданные на поле наследуют от одного
+                         *родительского класса Actor */
                         actors.push(actor);
                     }
                 }
@@ -375,6 +385,10 @@ const schemas = [
     ]
 ];
 
+function start() {
+    const parser = new LevelParser(actorDict);
+    runGame(schemasWin, parser, DOMDisplay)
+}
 const actorDict = {
     '@': Player,
     'v': VerticalFireball,
@@ -382,18 +396,6 @@ const actorDict = {
     '=': HorizontalFireball,
     '|': FireRain
 };
-
-function setClass(classname) {
-    if (classname == "end") {
-        const parser = new LevelParser(actorDict);
-        runGame(schemasWin, parser, DOMDisplay)
-
-        document.getElementById('pole').className = "background";
-        document.getElementById('pole').classList.add("end");
-    } else {
-        document.getElementById('pole').classList.add(classname);
-    }
-}
 
 const parser = new LevelParser(actorDict);
 runGame(schemas, parser, DOMDisplay)
