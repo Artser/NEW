@@ -49,6 +49,7 @@ class DOMDisplay {
         var table = elt("table", "background");
         table.style.width = this.level.width * scale + "px";
         table.id = 'pole';
+        var pole = table;
         this.level.grid.forEach(function(row) {
             var rowElt = table.appendChild(elt("tr"));
             rowElt.style.height = 27.4 + "px";
@@ -258,16 +259,20 @@ function initGameObjects() {
         }
     };
 }
-window.lives = document.getElementById('lives');
+
+let lives = document.getElementById('lives');
 
 function runGame(plans, Parser, Display) {
     return new Promise(done => {
 
         var myLives = 3;
+        startLevel(0);
+        let n = 0;
 
         function startLevel(n) {
+
             function showLives() {
-                return lives.innerHTML = `Жизни ${myLives}`;
+                return lives.innerHTML = `Жизни: ${myLives}`;
             }
             runLevel(Parser.parse(plans[n]), Display)
                 .then(status => {
@@ -275,41 +280,58 @@ function runGame(plans, Parser, Display) {
                         myLives--;
                         showLives();
 
-
                         if (myLives < 0) {
                             // Игра запускается заново
                             myLives = 3;
                             showLives();
                             startLevel(0);
                             let n = 0;
-                            setClass("level0");;
+
+
                         } else {
 
                             startLevel(n);
-
-                            setClass(`level${n}`);
 
                         }
 
                     } else if (n < plans.length - 2) {
 
                         startLevel(n + 1);
-                        setClass(`level${n+1}`);
+
+
+                    } else if (n < plans.length - 1) {
+
+                        startLevel(plans.length - 1);
+
                     } else {
-                        if (n < plans.length - 1) {
-                            startLevel(plans.length - 1);
-                            setClass("win");
-                        } else {
-                            done();
-                        }
+                        done();
                     }
+
                 });
+
+            setClass(`level${n}`);
+
         }
 
-        startLevel(0);
-        let n = 0;
-        setClass("level0");
     });
+}
+
+function setClass(classname) {
+    if (classname == "end") {
+
+        start();
+        pole.className = "background";
+        pole.classList.add("end");
+
+    } else if (classname == "level2") {
+
+        pole.classList.add("win");
+
+    } else {
+
+        pole.classList.add(classname);
+
+    }
 }
 
 function rand(max = 10, min = 0) {
